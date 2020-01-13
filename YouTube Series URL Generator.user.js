@@ -14,7 +14,7 @@
     'use strict';
 
     var appVer = GM_info.script.version;
-    var buildNumber = 1;
+    var updateNumber = 1;
     var version = 1;
     var title;
     var timer = true;
@@ -37,9 +37,9 @@
             dataType:"json",
             timespan:2000
         }).done(function(data) {
-            var latestBuildNumber = data["name"];
-            latestBuildNumber = latestBuildNumber.substring(latestBuildNumber.indexOf('(build')+6, latestBuildNumber.indexOf(')'));
-            if(parseInt(latestBuildNumber)>buildNumber) {
+            var latestUpdateNumber = data["name"];
+            latestUpdateNumber = latestUpdateNumber.substring(latestUpdateNumber.indexOf('(update')+6, latestUpdateNumber.indexOf(')'));
+            if(parseInt(latestUpdateNumber)>updateNumber) {
                 const a = document.createElement("a");
                 a.href = data["assets"][0]["browser_download_url"];
                 a.target = "_blank";
