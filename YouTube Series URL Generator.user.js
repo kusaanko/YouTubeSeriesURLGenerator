@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Series URL Generator
 // @namespace    https://github.com/kusaanko/YouTubeSeriesURLGenerator
-// @version      0.5
+// @version      0.6
 // @description  YouTubeのシリーズ物の説明文を記入するのを手助けします。
 // @author       Kusaanko
 // @match        https://studio.youtube.com/channel/*/*
@@ -14,11 +14,10 @@
     'use strict';
 
     var appVer = GM_info.script.version;
-    var updateNumber = 1;
-    var version = 1;
+    var updateNumber = 2;
     var title;
     var timer = true;
-    var dbVersion = 1;
+    var dbVersion = 2;
     var dbName = "youtubeseriesurlgenerator";
     var channelID = location.href;
 
@@ -81,7 +80,9 @@
                             '<dialog id="youtubeseriesurlgenerator_dialognewseries"><a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/wiki#%E6%96%B0%E3%81%97%E3%81%84%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA%E3%82%92%E8%BF%BD%E5%8A%A0" target="_blank" rel="noopener">ヘルプ</a>'+
                             '<table><tr><td>シリーズ名</td><td><input id="youtubeseriesurlgenerator_series_seriesname" type="text"></td></tr>'+
                             '<tr><td>判断基準(ワイルドカード)</td><td><input id="youtubeseriesurlgenerator_series_check" type="text"></td></tr>'+
-                            '<tr><td>前回の動画URL(ある場合)</td><td><input id="youtubeseriesurlgenerator_series_preurl" type="text"></td></tr></table>'+
+                            '<tr><td>前回の動画URL(ある場合)</td><td><input id="youtubeseriesurlgenerator_series_preurl" type="text"></td></tr>'+
+                            '<tr><td>タグ(,で区切る)</td><td><input id="youtubeseriesurlgenerator_series_tag" type="text"></td></tr>'+
+                            '<tr><td>ゲーム名</td><td><input id="youtubeseriesurlgenerator_series_game" type="text"></td></tr></table>'+
                             '<p>このシリーズの説明文</p><div><textarea id="youtubeseriesurlgenerator_series_desc" rows="10" style="width: 100%;"></textarea></div>'+
                             '<p>説明文を固定説明文の<select id="youtubeseriesurlgenerator_series_desc_position"><option>前</option><option>後</option></select>に記述する</p>'+
                             ''+
@@ -131,6 +132,8 @@
                             $('#youtubeseriesurlgenerator_series_check').val(result.wildcard);
                             $('#youtubeseriesurlgenerator_series_desc').val(result.desc);
                             $('#youtubeseriesurlgenerator_series_preurl').val(result.preurl);
+                            $('#youtubeseriesurlgenerator_series_tag').val(result.tag);
+                            $('#youtubeseriesurlgenerator_series_game').val(result.game);
                             $('#youtubeseriesurlgenerator_series_desc_position').val(result.pos);
                         }
                         db.close();
@@ -148,8 +151,8 @@
                     }
                     document.getElementById('youtubeseriesurlgenerator_dialognewseries').close();
                     updateDB();
-                    addDB($('#youtubeseriesurlgenerator_series_seriesname').val(), $('#youtubeseriesurlgenerator_series_check').val(), $('#youtubeseriesurlgenerator_series_preurl').val(), $('#youtubeseriesurlgenerator_series_desc').val(),
-                          $('#youtubeseriesurlgenerator_series_desc_position').val());
+                    addDB($('#youtubeseriesurlgenerator_series_seriesname').val(), $('#youtubeseriesurlgenerator_series_check').val(), $('#youtubeseriesurlgenerator_series_preurl').val(), $('#youtubeseriesurlgenerator_series_tag').val(),
+                           $('#youtubeseriesurlgenerator_series_game').val(), $('#youtubeseriesurlgenerator_series_desc').val(), $('#youtubeseriesurlgenerator_series_desc_position').val());
                     updateDB();
                 });
                 $('#youtubeseriesurlgenerator_series_preurl_edit').click(function() {
@@ -191,6 +194,8 @@
                     $('#youtubeseriesurlgenerator_series_seriesname').val(title);
                     $('#youtubeseriesurlgenerator_series_check').val(title);
                     $('#youtubeseriesurlgenerator_series_desc').val('Part1→'+getMovieURL()+'\n\n前→[part]\n次→まだ');
+                    $('#youtubeseriesurlgenerator_series_tag').val('');
+                    $('#youtubeseriesurlgenerator_series_game').val('');
                     $('#youtubeseriesurlgenerator_series_remove').css('display', 'none');
                 });
                 $('#youtubeseriesurlgenerator_write').click(function() {
@@ -209,7 +214,9 @@
                             if(result.pos=='前') textarea.html(result.desc.replace("[part]", result.preurl) + "\n" + textarea.html());
                             else textarea.html(textarea.html() + "\n" + result.desc.replace("[part]", result.preurl));
                             if(!preurl_bkup) preurl_bkup = {key: result.key, url: result.preurl};
-                            addDB(Base64.decode(result.key), result.wildcard, getMovieURL(), result.desc, result.pos);
+                            $('#text-input[placeholder="タグを追加"]').val(result.tag);
+                            $('input[aria-label="ゲームのタイトル（省略可）"]').val(result.game);
+                            addDB(Base64.decode(result.key), result.wildcard, getMovieURL(), result.tag, result.game, result.desc, result.pos);
                             $('#youtubeseriesurlgenerator_preurl_updated').css('display', 'inline');
                             alert('説明文に文字をなにか適当に入力して削除し、ドラフトを保存しています...となるようにしてください。');
                         }
@@ -312,7 +319,9 @@
 
         openReq.onupgradeneeded = function(event){
             var db = event.target.result;
-            db.createObjectStore(channelID, {keyPath : 'key'});
+            try{
+                db.createObjectStore(channelID, {keyPath : 'key'});
+            } catch (e) {}
             $('#youtubeseriesurlgenerator_notice').show();
         }
         openReq.onsuccess = function(event){
@@ -341,7 +350,7 @@
         }
         DBError(openReq);
     };
-    var addDB = function(name, wildcard, preurl, desc, pos) {
+    var addDB = function(name, wildcard, preurl, tag, game, desc, pos) {
         var openReq  = indexedDB.open(dbName, dbVersion);
 
         openReq.onsuccess = function(event){
@@ -350,7 +359,7 @@
             var transaction = db.transaction([channelID], "readwrite");
 
             var store = transaction.objectStore(channelID);
-            store.put({key: Base64.encode(name), wildcard: wildcard, preurl: preurl, desc: desc, pos: pos});
+            store.put({key: Base64.encode(name), wildcard: wildcard, preurl: preurl, tag: tag, game: game, desc: desc, pos: pos});
             db.close();
         }
         DBError(openReq);
