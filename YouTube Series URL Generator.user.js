@@ -37,7 +37,7 @@
             timespan:2000
         }).done(function(data) {
             var latestUpdateNumber = data["name"];
-            latestUpdateNumber = latestUpdateNumber.substring(latestUpdateNumber.indexOf('(update')+6, latestUpdateNumber.indexOf(')'));
+            latestUpdateNumber = latestUpdateNumber.substring(latestUpdateNumber.indexOf('(update')+7, latestUpdateNumber.indexOf(')'));
             if(parseInt(latestUpdateNumber)>updateNumber) {
                 const a = document.createElement("a");
                 a.href = data["assets"][0]["browser_download_url"];
