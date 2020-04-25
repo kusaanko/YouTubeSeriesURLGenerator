@@ -7,7 +7,7 @@
 // @match        https://studio.youtube.com/channel/*/*
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.4.1.min.js
-// @license      Apache License 2.0
+// @license      Apache License 2.0 https://github.com/kusaanko/YouTubeSeriesURLGenerator/blob/master/LICENSE
 // ==/UserScript==
 
 (function() {
