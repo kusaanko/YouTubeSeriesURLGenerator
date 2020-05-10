@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Series URL Generator
 // @namespace    https://github.com/kusaanko/YouTubeSeriesURLGenerator
-// @version      0.6
+// @version      0.6.1
 // @description  YouTubeのシリーズ物の説明文を記入するのを手助けします。
 // @author       Kusaanko
 // @match        https://studio.youtube.com/channel/*/*
@@ -14,7 +14,7 @@
     'use strict';
 
     var appVer = GM_info.script.version;
-    var updateNumber = 2;
+    var updateNumber = 3;
     var title;
     var timer = true;
     var dbVersion = 2;
@@ -62,17 +62,21 @@
                 preurl_bkup = undefined;
             }
             if(title&&timer) {
-                console.log(getMovieURL());
                 $(descSelector).css('height', '300px');
                 var position = $(descSelector);
-                position.after('<div id="youtubeseriesurlgenerator" style="margin: 40 0;"></div>');
+                position.after('<div id="youtubeseriesurlgenerator" style="margin: 10px 0;"></div>');
                 var view = $('#youtubeseriesurlgenerator');
                 view.append('<h2 style="font-family: \'YT Sans\', \'Roboto\', \'Arial\', sans-serif;">YouTube Series URL Generator(v'+appVer+')</h2>'+
                             '<div style="margin: 0;color: red;display: none;" id="youtubeseriesurlgenerator_notice"><p>注意:CCleaner等のクリーンアプリでChromeのデータを削除しないで下さい。</p>'+
                             '<p>消し方によってはシリーズのデータが消滅します。</p><p>クリーナーアプリを実行する際はシリーズの保存・復元をご利用ください。</p><p>この表示は今回・アップデート時のみ表示されます。</p></div>'+
                             '<p><a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/wiki" target="_blank" rel="noopener">ヘルプ</a></p>'+
-                            '<a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/issues" target="_blank" rel="noopener">問題を報告する</a>'+
-                            '<p style="margin: 0;">シリーズを選択</p>'+
+                            '<a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/issues" target="_blank" rel="noopener">問題を報告する</a>');
+                if(getMovieURL() == '') {
+                    updateDB();
+                    timer = false;
+                    return;
+                }
+                view.append('<p style="margin: 0;">シリーズを選択</p>'+
                             '<p style="margin: 0;"><select id="youtubeseriesurlgenerator_chooseseries" style="width: 100%;"></select></p>'+
                             '<p style="margin: 0;"><a href="" style="text-decoration: none;color: #3db1d4;" id="youtubeseriesurlgenerator_series">新しいシリーズを追加</a></p>'+
                             '<p style="margin: 0;"><a href="" style="text-decoration: none;color: #3db1d4;" id="youtubeseriesurlgenerator_series_edit">このシリーズを編集</a></p>'+
@@ -312,8 +316,26 @@
         };
     };
     var getMovieURL = function() {
-        return $('#details > ytcp-video-metadata-info > div > div.row.style-scope.ytcp-video-metadata-info > div.left.style-scope.ytcp-video-metadata-info > div.value.style-scope.ytcp-video-metadata-info > span > a').text().replace(/\n/g, '').replace(/\s+/g,'');
+        var elem = $('#details > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a > a');
+        if(!elem.length) {
+            addAlertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートを待機、もしくは手動でURLを入力してください。');
+            return '';
+        }
+        return elem.text().replace(/\n/g, '').replace(/\s+/g,'');
     };
+    var addAlertBox = function(text) {
+        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', '#b9b9b9') + '</dialog>');
+        document.getElementById('ytsug_dialog').showModal();
+        $('.ytsug_dialog_ok').on('click', function() {
+            $('#ytsug_dialog').remove();
+        });
+    };
+    var genButton = function(text, color) {
+        return '<ytcp-button class="ytsug_dialog_ok" style="margin: 0 5px;background-color: ' + color + ';" label="' + text + '" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
+            '<div class="label style-scope ytcp-button">' + text + '</div><paper-ripple class="style-scope ytcp-button">'+
+            '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
+            '<div id="waves" class="style-scope paper-ripple"></div></paper-ripple></ytcp-button>';
+    }
     var updateDB = function() {
         var openReq  = indexedDB.open(dbName, dbVersion);
 
