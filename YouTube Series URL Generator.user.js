@@ -207,7 +207,7 @@
                             $('input[aria-label="ゲームのタイトル（省略可）"]').val(result.game);
                             addDB(Base64.decode(result.key), result.wildcard, getMovieURL(), result.tag, result.game, result.desc, result.pos);
                             $('#youtubeseriesurlgenerator_preurl_updated').css('display', 'inline');
-                            alert('説明文に文字をなにか適当に入力して削除し、ドラフトを保存しています...となるようにしてください。');
+                            alertBox('説明文に文字をなにか適当に入力して削除し、ドラフトを保存しています...となるようにしてください。');
                         }
                         db.close();
                     }
