@@ -24,6 +24,8 @@
     var titleSelector = 'ytcp-mention-textbox[label="タイトル"] #textbox';
     var descSelector = 'ytcp-mention-textbox[label="説明"]';
     var descAreaSelector = descSelector + ' #textbox';
+    var tagSelector = '#text-input[placeholder="タグを追加"]';
+    var gameTitleSelector = 'input[aria-label="ゲームのタイトル（省略可）"]';
 
     var removeKey, preurl_bkup;
     channelID = channelID.replace('https://studio.youtube.com/channel/', '');
@@ -72,7 +74,19 @@
                             '<p><a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/releases" target="_blank" rel="noopener">更新履歴を見る</a></p>'+
                             '<p><a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/wiki" target="_blank" rel="noopener">ヘルプ</a></p>'+
                             '<a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/issues" target="_blank" rel="noopener">問題を報告する</a>');
+                var cantWork = false;
                 if(getMovieURL() == '') {
+                    cantWork = true;
+                }
+                if(!cantWork && !$(descAreaSelector).length) {
+                    cantWork = true;
+                    alertBox('説明文の場所が特定できませんでした。\nYouTube Series URL Generatorの更新をお待ち下さい。');
+                }
+                if(!cantWork && !$(tagSelector).length) {
+                    cantWork = true;
+                    alertBox('タグの場所が特定できませんでした。\nYouTube Series URL Generatorの更新をお待ち下さい。');
+                }
+                if(cantWork) {
                     updateDB();
                     timer = false;
                     return;
@@ -208,8 +222,8 @@
                             if(result.pos=='前') textarea.html(result.desc.replace("[part]", result.preurl) + "\n" + textarea.html());
                             else textarea.html(textarea.html() + "\n" + result.desc.replace("[part]", result.preurl));
                             if(!preurl_bkup) preurl_bkup = {key: result.key, url: result.preurl};
-                            $('#text-input[placeholder="タグを追加"]').val(result.tag);
-                            $('input[aria-label="ゲームのタイトル（省略可）"]').val(result.game);
+                            $(tagSelector).val(result.tag);
+                            $(gameTitleSelector).val(result.game);
                             addDB(Base64.decode(result.key), result.wildcard, getMovieURL(), result.tag, result.game, result.desc, result.pos);
                             $('#youtubeseriesurlgenerator_preurl_updated').css('display', 'inline');
                             alertBox('説明文に文字をなにか適当に入力して削除し、\nドラフトを保存しています...となるようにしてください。');
@@ -308,7 +322,7 @@
     var getMovieURL = function() {
         var elem = $('#details > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a');
         if(!elem.length) {
-            alertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートを待機、もしくは手動でURLを入力してください。');
+            alertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートの更新をお待ち下さい。');
             return '';
         }
         return elem.text().replace(/\n/g, '').replace(/\s+/g,'');
