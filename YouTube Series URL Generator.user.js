@@ -90,24 +90,9 @@
                             '<p>このシリーズの説明文</p><div><textarea id="youtubeseriesurlgenerator_series_desc" rows="10" style="width: 100%;"></textarea></div>'+
                             '<p>説明文を固定説明文の<select id="youtubeseriesurlgenerator_series_desc_position"><option>前</option><option>後</option></select>に記述する</p>'+
                             ''+
-                            '<menu><ytcp-button id="youtubeseriesurlgenerator_series_remove" style="margin: 0 5px;background-color: #ff2323;" label="削除" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
-                            '<div class="label style-scope ytcp-button">削除</div><paper-ripple class="style-scope ytcp-button">'+
-                            '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
-                            '<div id="waves" class="style-scope paper-ripple"></div>'+
-                            '</paper-ripple></ytcp-button>'+
-                            '<ytcp-button id="youtubeseriesurlgenerator_series_cancel" style="margin: 0 5px;background-color: #b9b9b9;" label="キャンセル" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
-                            '<div class="label style-scope ytcp-button">キャンセル</div><paper-ripple class="style-scope ytcp-button">'+
-                            '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
-                            '<div id="waves" class="style-scope paper-ripple"></div></paper-ripple></ytcp-button>'+
-                            '<ytcp-button style="margin: 0 5px;" id="youtubeseriesurlgenerator_series_ok" label="完了" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
-                            '<div class="label style-scope ytcp-button">完了</div><paper-ripple class="style-scope ytcp-button">'+
-                            '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
-                            '<div id="waves" class="style-scope paper-ripple"></div>'+
-                            '</paper-ripple></ytcp-button></menu></dialog>'+
-                            '<ytcp-button id="youtubeseriesurlgenerator_write" label="説明文に記入する" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
-                            '<div class="label style-scope ytcp-button">説明文に記入する</div><paper-ripple class="style-scope ytcp-button">'+
-                            '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
-                            '<div id="waves" class="style-scope paper-ripple"></div></paper-ripple></ytcp-button>'+
+                            '<menu>' + genButton('削除', 'youtubeseriesurlgenerator_series_remove', '#ff2323') + genButton('キャンセル', 'youtubeseriesurlgenerator_series_cancel', '#b9b9b9') + genButton('完了', 'youtubeseriesurlgenerator_series_ok', '') +
+                            '</menu></dialog>'+
+                            genButton('説明文に記入する', 'youtubeseriesurlgenerator_write', '') +
                             '<p style="margin: 0;"><a href="" style="text-decoration: none;color: #3db1d4;" id="youtubeseriesurlgenerator_series_save">シリーズをファイルに保存</a></p>'+
                             '<p style="margin: 0;"><a href="" style="text-decoration: none;color: #3db1d4;" id="youtubeseriesurlgenerator_series_load">ファイルからシリーズを復元</a></p>');
                 view.append('<div id="youtubeseriesurlgenerator_preurl_updated" style="display: none;">前回のURLをこの動画に更新しました。<a href="" style="text-decoration: none;color: #ff0000;" id="youtubeseriesurlgenerator_series_preurl_undo">元に戻す</a><p style="margin: 0;"></p></div>');
@@ -324,14 +309,14 @@
         return elem.text().replace(/\n/g, '').replace(/\s+/g,'');
     };
     var addAlertBox = function(text) {
-        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', '#b9b9b9') + '</dialog>');
+        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '#b9b9b9') + '</dialog>');
         document.getElementById('ytsug_dialog').showModal();
-        $('.ytsug_dialog_ok').on('click', function() {
+        $('#ytsug_dialog_ok').on('click', function() {
             $('#ytsug_dialog').remove();
         });
     };
-    var genButton = function(text, color) {
-        return '<ytcp-button class="ytsug_dialog_ok" style="margin: 0 5px;background-color: ' + color + ';" label="' + text + '" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
+    var genButton = function(text, id, color) {
+        return '<ytcp-button id="' + id + '" style="margin: 0 5px;background-color: ' + color + ';" label="' + text + '" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
             '<div class="label style-scope ytcp-button">' + text + '</div><paper-ripple class="style-scope ytcp-button">'+
             '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
             '<div id="waves" class="style-scope paper-ripple"></div></paper-ripple></ytcp-button>';
