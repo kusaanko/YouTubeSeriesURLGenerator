@@ -316,7 +316,7 @@
         };
     };
     var getMovieURL = function() {
-        var elem = $('#details > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a > a');
+        var elem = $('#details > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a');
         if(!elem.length) {
             addAlertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートを待機、もしくは手動でURLを入力してください。');
             return '';
