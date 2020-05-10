@@ -39,7 +39,7 @@
             var latestUpdateNumber = data["name"];
             latestUpdateNumber = latestUpdateNumber.substring(latestUpdateNumber.indexOf('(update')+7, latestUpdateNumber.indexOf(')'));
             if(parseInt(latestUpdateNumber)>updateNumber) {
-                const a = document.createElement("a");
+                var a = document.createElement("a");
                 a.href = data["assets"][0]["browser_download_url"];
                 a.target = "_blank";
                 a.rel = "noopener";
@@ -69,6 +69,7 @@
                 view.append('<h2 style="font-family: \'YT Sans\', \'Roboto\', \'Arial\', sans-serif;">YouTube Series URL Generator(v'+appVer+')</h2>'+
                             '<div style="margin: 0;color: red;display: none;" id="youtubeseriesurlgenerator_notice"><p>注意:CCleaner等のクリーンアプリでChromeのデータを削除しないで下さい。</p>'+
                             '<p>消し方によってはシリーズのデータが消滅します。</p><p>クリーナーアプリを実行する際はシリーズの保存・復元をご利用ください。</p><p>この表示は今回・アップデート時のみ表示されます。</p></div>'+
+                            '<p><a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/releases" target="_blank" rel="noopener">更新履歴を見る</a></p>'+
                             '<p><a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/wiki" target="_blank" rel="noopener">ヘルプ</a></p>'+
                             '<a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/issues" target="_blank" rel="noopener">問題を報告する</a>');
                 if(getMovieURL() == '') {
