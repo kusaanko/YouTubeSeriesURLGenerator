@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Series URL Generator
 // @namespace    https://github.com/kusaanko/YouTubeSeriesURLGenerator
-// @version      0.6.1
+// @version      0.7
 // @description  YouTubeのシリーズ物の説明文を記入するのを手助けします。
 // @author       Kusaanko
 // @match        https://studio.youtube.com/channel/*/*
