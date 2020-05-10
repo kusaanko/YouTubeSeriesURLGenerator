@@ -176,10 +176,10 @@
                     DBError(openReq);
                 });
                 $('#youtubeseriesurlgenerator_series_remove').click(function() {
-                    if(window.confirm($('#youtubeseriesurlgenerator_series_seriesname').val()+'を本当に削除しますか？')) {
-                        document.getElementById('youtubeseriesurlgenerator_dialognewseries').close();
+                    yesNoBox($('#youtubeseriesurlgenerator_series_seriesname').val()+'を本当に削除しますか？', function() {
                         removeDB(Base64.encode($('#youtubeseriesurlgenerator_series_seriesname').val()));
-                    }
+                        document.getElementById('youtubeseriesurlgenerator_dialognewseries').close();
+                    });
                 });
                 $('#youtubeseriesurlgenerator_series').click(function() {
                     document.getElementById('youtubeseriesurlgenerator_dialognewseries').showModal();
@@ -268,7 +268,7 @@
                         var files = e.target.files; // FileList object
 
                         if(files[0].name.indexOf('.ytsug')==-1) {
-                            alert('.ytsug形式を選択してください。');
+                            alertBox('.ytsug形式を選択してください。');
                             return;
                         }
                         var file_reader = new FileReader();
@@ -316,6 +316,17 @@
         $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '#b9b9b9') + '</dialog>');
         document.getElementById('ytsug_dialog').showModal();
         $('#ytsug_dialog_ok').on('click', function() {
+            $('#ytsug_dialog').remove();
+        });
+    };
+    var yesNoBox = function(text, func) {
+        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('はい', 'ytsug_dialog_yes', '') + genButton('いいえ', 'ytsug_dialog_no', '#b9b9b9') + '</dialog>');
+        document.getElementById('ytsug_dialog').showModal();
+        $('#ytsug_dialog_yes').on('click', function() {
+            func();
+            $('#ytsug_dialog').remove();
+        });
+        $('#ytsug_dialog_no').on('click', function() {
             $('#ytsug_dialog').remove();
         });
     };
