@@ -124,6 +124,9 @@
                             $('#youtubeseriesurlgenerator_series_tag').val(result.tag);
                             $('#youtubeseriesurlgenerator_series_game').val(result.game);
                             $('#youtubeseriesurlgenerator_series_desc_position').val(result.pos);
+                            if($('#youtubeseriesurlgenerator_series_desc_position').val() == '') {
+                                $('#youtubeseriesurlgenerator_series_desc_position').val('前');
+                            }
                         }
                         db.close();
                     }
@@ -157,7 +160,7 @@
                             var result = event.target.result;
                             var url = result.preurl;
                             if(url=='') {
-                                alert('前回の動画が設定してありません。');
+                                alertBox('前回の動画が設定してありません。');
                                 return;
                             }
                             url = url.replace(/https?:\/\/youtu.be\//, '').replace(/https?:\/\/(www\.)?youtube\.(com|co\.jp)\/watch\?v=/, '');
@@ -186,6 +189,7 @@
                     $('#youtubeseriesurlgenerator_series_tag').val('');
                     $('#youtubeseriesurlgenerator_series_game').val('');
                     $('#youtubeseriesurlgenerator_series_remove').css('display', 'none');
+                    $('#youtubeseriesurlgenerator_series_desc_position').val('前');
                 });
                 $('#youtubeseriesurlgenerator_write').click(function() {
                     var openReq  = indexedDB.open(dbName, dbVersion);
