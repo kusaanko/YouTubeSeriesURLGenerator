@@ -297,18 +297,18 @@
     };
     var DBError = function(openReq) {
         openReq.onerror = function(event){
-            alert('YouTube Series URL Generator(v'+appVer+')\nエラーが発生しました。エラーコード:'+event.target.errorCode);
+            alertBox('YouTube Series URL Generator(v'+appVer+')\nエラーが発生しました。エラーコード:'+event.target.errorCode);
         };
     };
     var getMovieURL = function() {
         var elem = $('#details > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a');
         if(!elem.length) {
-            addAlertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートを待機、もしくは手動でURLを入力してください。');
+            alertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートを待機、もしくは手動でURLを入力してください。');
             return '';
         }
         return elem.text().replace(/\n/g, '').replace(/\s+/g,'');
     };
-    var addAlertBox = function(text) {
+    var alertBox = function(text) {
         $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '#b9b9b9') + '</dialog>');
         document.getElementById('ytsug_dialog').showModal();
         $('#ytsug_dialog_ok').on('click', function() {
