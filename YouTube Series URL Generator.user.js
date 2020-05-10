@@ -211,7 +211,7 @@
                             $('input[aria-label="ゲームのタイトル（省略可）"]').val(result.game);
                             addDB(Base64.decode(result.key), result.wildcard, getMovieURL(), result.tag, result.game, result.desc, result.pos);
                             $('#youtubeseriesurlgenerator_preurl_updated').css('display', 'inline');
-                            alertBox('説明文に文字をなにか適当に入力して削除し、ドラフトを保存しています...となるようにしてください。');
+                            alertBox('説明文に文字をなにか適当に入力して削除し、\nドラフトを保存しています...となるようにしてください。');
                         }
                         db.close();
                     }
@@ -313,7 +313,7 @@
         return elem.text().replace(/\n/g, '').replace(/\s+/g,'');
     };
     var alertBox = function(text) {
-        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '#b9b9b9') + '</dialog>');
+        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '') + '</dialog>');
         document.getElementById('ytsug_dialog').showModal();
         $('#ytsug_dialog_ok').on('click', function() {
             $('#ytsug_dialog').remove();
