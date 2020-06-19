@@ -248,7 +248,7 @@
                         var store = transaction.objectStore(channelID);
                         store.get(preurl_bkup.key).onsuccess = function(event){
                             var result = event.target.result;
-                            addDB(Base64.decode(result.key), result.wildcard, preurl_bkup.url, result.desc, result.pos);
+                            addDB(Base64.decode(result.key), result.wildcard, preurl_bkup.url, result.tag, result.game, result.desc, result.pos);
                             preurl_bkup = undefined;
                         }
                         db.close();
