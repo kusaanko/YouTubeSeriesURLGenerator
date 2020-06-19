@@ -1,20 +1,23 @@
 // ==UserScript==
 // @name         YouTube Series URL Generator
 // @namespace    https://github.com/kusaanko/YouTubeSeriesURLGenerator
-// @version      0.7
+// @version      0.8
 // @description  YouTubeのシリーズ物の説明文を記入するのを手助けします。
 // @author       Kusaanko
 // @match        https://studio.youtube.com/channel/*/*
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.4.1.min.js
+// @require      https://raw.githubusercontent.com/cure53/DOMPurify/2.0.11/dist/purify.min.js
 // @license      Apache License 2.0 https://github.com/kusaanko/YouTubeSeriesURLGenerator/blob/master/LICENSE
 // ==/UserScript==
 
 (function() {
     'use strict';
 
+    console.log(DOMPurify);
+
     var appVer = GM_info.script.version;
-    var updateNumber = 3;
+    var updateNumber = 4;
     var title;
     var timer = true;
     var dbVersion = 2;
@@ -219,8 +222,10 @@
                             var result = event.target.result;
                             var textarea = $(descAreaSelector);
                             textarea.focus();
-                            if(result.pos=='前') textarea.html(result.desc.replace("[part]", result.preurl) + "\n" + textarea.html());
-                            else textarea.html(textarea.html() + "\n" + result.desc.replace("[part]", result.preurl));
+                            var desc = result.desc;
+                            if(desc.indexOf("[part]") != -1) desc = desc.replace("[part]", result.preurl);
+                            if(result.pos=='前') textarea.html(desc + "\n" + textarea.html());
+                            else textarea.html(textarea.html() + "\n" + desc);
                             if(!preurl_bkup) preurl_bkup = {key: result.key, url: result.preurl};
                             $(tagSelector).val(result.tag);
                             $(gameTitleSelector).val(result.game);
