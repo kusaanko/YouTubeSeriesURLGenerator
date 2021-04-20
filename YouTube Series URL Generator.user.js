@@ -17,13 +17,14 @@
     console.log(DOMPurify);
 
     var appVer = GM_info.script.version;
-    var updateNumber = 4;
+    var updateNumber = 5;
     var title;
     var timer = true;
     var dbVersion = 2;
     var dbName = "youtubeseriesurlgenerator";
     var channelID = location.href;
     var coolTime = 0;
+    var needUpdate = false;
 
     var titleSelector = 'ytcp-mention-textbox[label="タイトル"] #textbox';
     var descSelector = 'ytcp-mention-textbox[label="説明"]';
@@ -46,11 +47,13 @@
             var latestUpdateNumber = data["name"];
             latestUpdateNumber = latestUpdateNumber.substring(latestUpdateNumber.indexOf('(update')+7, latestUpdateNumber.indexOf(')'));
             if(parseInt(latestUpdateNumber)>updateNumber) {
-                var a = document.createElement("a");
-                a.href = data["assets"][0]["browser_download_url"];
-                a.target = "_blank";
-                a.rel = "noopener";
-                a.click();
+                alertBox('YouTubeSeriesURLGeneratorに更新があります\n' +
+                         '下記リンクをクリックして更新して下さい。\n' +
+                         '<a href="' + data["assets"][0]["browser_download_url"] + '" target="_blank" rel="noopener">' +
+                         data["assets"][0]["browser_download_url"] + '</a>\n' +
+                        'もしくは配布ページからダウンロード\n' +
+                        '<a href="https://github.com/kusaanko/YouTubeSeriesURLGenerator/releases/latest">https://github.com/kusaanko/YouTubeSeriesURLGenerator/releases/latest</a>');
+                needUpdate = true;
             }
         });
     };
@@ -58,6 +61,7 @@
 
     var startChecker = function() {
         setInterval(function() {
+            if(needUpdate) return;
             if(location.href.indexOf('/videos/upload?d=ud')==-1) {
                 timer = true;
                 preurl_bkup = undefined;
@@ -340,7 +344,7 @@
         return elem.text().replace(/\n/g, '').replace(/\s+/g,'');
     };
     var alertBox = function(text) {
-        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace('\n', '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '') + '</dialog>');
+        $('body').append('<dialog id="ytsug_dialog"><p>' + text.replace(/\n/g, '</p><p>') + '</p>' + genButton('OK', 'ytsug_dialog_ok', '') + '</dialog>');
         document.getElementById('ytsug_dialog').showModal();
         $('#ytsug_dialog_ok').on('click', function() {
             $('#ytsug_dialog').remove();
