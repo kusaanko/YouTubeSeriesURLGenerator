@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Series URL Generator
 // @namespace    https://github.com/kusaanko/YouTubeSeriesURLGenerator
-// @version      0.8
+// @version      1.0
 // @description  YouTubeのシリーズ物の説明文を記入するのを手助けします。
 // @author       Kusaanko
 // @match        https://studio.youtube.com/channel/*/*
@@ -23,12 +23,14 @@
     var dbVersion = 2;
     var dbName = "youtubeseriesurlgenerator";
     var channelID = location.href;
+    var coolTime = 0;
 
     var titleSelector = 'ytcp-mention-textbox[label="タイトル"] #textbox';
     var descSelector = 'ytcp-mention-textbox[label="説明"]';
     var descAreaSelector = descSelector + ' #textbox';
-    var tagSelector = '#text-input[placeholder="タグを追加"]';
+    var tagSelector = 'input[aria-label="タグ"]';
     var gameTitleSelector = 'input[aria-label="ゲームのタイトル（省略可）"]';
+    var viewAllSelector = '#toggle-button > div.ytcp-button';
 
     var removeKey, preurl_bkup;
     channelID = channelID.replace('https://studio.youtube.com/channel/', '');
@@ -66,7 +68,12 @@
                 timer = true;
                 preurl_bkup = undefined;
             }
-            if(title&&timer) {
+            if($(viewAllSelector).length && !$('#details > div > ytcp-video-metadata-editor-advanced').length) {
+                $(viewAllSelector).click();
+                coolTime = 5;//wait 0.5s
+            }
+            if(coolTime > 0) coolTime--;
+            if(title&&timer&&coolTime==0) {
                 $(descSelector).css('height', '300px');
                 var position = $(descSelector);
                 position.after('<div id="youtubeseriesurlgenerator" style="margin: 10px 0;"></div>');
@@ -325,7 +332,7 @@
         };
     };
     var getMovieURL = function() {
-        var elem = $('#details > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a');
+        var elem = $('#details > ytcp-video-metadata-editor-sidepanel > ytcp-video-info > div > div.row.style-scope.ytcp-video-info > div.left.style-scope.ytcp-video-info > div.value.style-scope.ytcp-video-info > span > a');
         if(!elem.length) {
             alertBox('この動画のURLの取得に失敗しました。\nYouTube Series URL Generatorのアップデートの更新をお待ち下さい。');
             return '';
