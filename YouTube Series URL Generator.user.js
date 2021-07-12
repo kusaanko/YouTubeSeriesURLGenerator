@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Series URL Generator
 // @namespace    https://github.com/kusaanko/YouTubeSeriesURLGenerator
-// @version      1.0
+// @version      1.1
 // @description  YouTubeのシリーズ物の説明文を記入するのを手助けします。
 // @author       Kusaanko
 // @match        https://studio.youtube.com/channel/*/*
@@ -17,7 +17,7 @@
     console.log(DOMPurify);
 
     var appVer = GM_info.script.version;
-    var updateNumber = 5;
+    var updateNumber = 6;
     var title;
     var timer = true;
     var dbVersion = 2;
@@ -362,7 +362,7 @@
         });
     };
     var genButton = function(text, id, color) {
-        return '<ytcp-button id="' + id + '" style="margin: 0 5px;background-color: ' + color + ';" label="' + text + '" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button">'+
+        return '<ytcp-button id="' + id + '" style="margin: 0 5px;background-color: ' + color + ';" label="' + text + '" class="style-scope ytcp-uploads-dialog" tabindex="0" aria-disabled="false" icon-alignment="start" raised="" role="button" type="filled">'+
             '<div class="label style-scope ytcp-button">' + text + '</div><paper-ripple class="style-scope ytcp-button">'+
             '<div id="background" class="style-scope paper-ripple" style="opacity: 0.0011;"></div>'+
             '<div id="waves" class="style-scope paper-ripple"></div></paper-ripple></ytcp-button>';
